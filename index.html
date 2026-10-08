@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LifeOps 防漏日历助手</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">L</div>
+        <div>
+          <div class="brand-title">LifeOps</div>
+          <div class="brand-subtitle">防漏日历助手</div>
+        </div>
+      </div>
+
+      <nav>
+        <button class="nav-item active" data-view="inbox">收件箱处理</button>
+        <button class="nav-item" data-view="calendar">日历计划</button>
+        <button class="nav-item" data-view="rules">规则引擎</button>
+        <button class="nav-item" data-view="meals">饮食计划</button>
+        <button class="nav-item" data-view="api">API</button>
+      </nav>
+
+      <div class="sidebar-note">
+        <strong>核心原则</strong>
+        <span>不让杂务侵占学习主块；硬截止单独标红；周日保护。</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="pageTitle">收件箱处理</h1>
+          <p id="pageDesc">把邮件转换成“回复 / 忽略 / 写入日历”的可执行动作。</p>
+        </div>
+        <div class="top-actions">
+          <span class="status"><span class="dot"></span> 演示模式</span>
+          <button id="syncBtn" class="btn ghost">模拟同步 Gmail</button>
+        </div>
+      </header>
+
+      <section id="view-inbox" class="view active">
+        <div class="grid two">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>今日邮件</h2>
+                <p>先摘要，再决定是否生成日历动作。</p>
+              </div>
+              <span class="pill">4 unread</span>
+            </div>
+            <div id="mailList" class="mail-list"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>动作预览</h2>
+                <p>不会直接执行；先展示规则计算结果。</p>
+              </div>
+            </div>
+            <div id="actionPreview" class="empty-state">
+              选择一封邮件查看建议动作。
+            </div>
+          </div>
+        </div>
+
+        <div class="panel composer">
+          <div class="panel-head">
+            <div>
+              <h2>自然语言写入</h2>
+              <p>例如：“FURF 11/1 截止，提前三次确认，不要放周日。”</p>
+            </div>
+          </div>
+          <div class="composer-row">
+            <textarea id="naturalInput" placeholder="输入任务、截止日期、课程、考试、采购、饮食或申请事项……"></textarea>
+            <button id="planBtn" class="btn primary">生成排程</button>
+          </div>
+          <div id="planResult" class="plan-result"></div>
+        </div>
+      </section>
+
+      <section id="view-calendar" class="view">
+        <div class="week-strip">
+          <div class="day"><span>周一</span><b>12</b></div>
+          <div class="day"><span>周二</span><b>13</b><i>杂务午间</i></div>
+          <div class="day"><span>周三</span><b>14</b></div>
+          <div class="day"><span>周四</span><b>15</b><i>杂务午间</i></div>
+          <div class="day"><span>周五</span><b>16</b></div>
+          <div class="day"><span>周六</span><b>17</b></div>
+          <div class="day protected"><span>周日</span><b>18</b><i>人格修炼</i></div>
+        </div>
+
+        <div class="timeline">
+          <div class="time-col">
+            <span>08:00</span><span>12:00</span><span>13:00</span><span>17:00</span><span>18:00</span><span>20:00</span>
+          </div>
+          <div class="timeline-body">
+            <div class="block study" style="top:0;height:150px">数学分析主块<br><small>课堂优先 · 不处理杂务</small></div>
+            <div class="block lunch" style="top:160px;height:50px">午饭 / 运动</div>
+            <div class="block errand" style="top:170px;left:52%;width:45%;height:30px">周二/周四中午杂务</div>
+            <div class="block study" style="top:220px;height:150px">数学分析主块</div>
+            <div class="block dinner" style="top:380px;height:55px">晚饭</div>
+            <div class="block errand" style="top:390px;left:48%;width:49%;height:35px">晚饭杂务 / Deadline Sweep</div>
+            <div class="block personal" style="top:490px;height:95px">人格修炼</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>即将到来的关键节点</h2></div>
+          <div class="deadline-list">
+            <div class="deadline red"><span class="date">10/09</span><div><b>CS1114 Quiz 3</b><small>硬截止 / 正式考试节点</small></div></div>
+            <div class="deadline"><span class="date">10/15</span><div><b>FURF 项目筛选与资格核对</b><small>周四中午防漏</small></div></div>
+            <div class="deadline red"><span class="date">11/01</span><div><b>FURF Application</b><small>截止时刻未知 → 全天红色标记</small></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-rules" class="view">
+        <div class="rules-grid">
+          <article class="rule-card"><span>01</span><h3>杂务只能进允许时段</h3><p>周二/周四中午，或周一至周六晚饭。正式考试、课程和不可移动活动除外。</p></article>
+          <article class="rule-card"><span>02</span><h3>硬截止单独标红</h3><p>作业、考试、实验、申请、付款等硬截止创建独立红色事件；未知具体时刻时不猜 23:59。</p></article>
+          <article class="rule-card"><span>03</span><h3>重要事项做三段确认</h3><p>申请、房租等高损失事项：早期核对 → 中期进度 → 临截止确认。</p></article>
+          <article class="rule-card"><span>04</span><h3>周日保护</h3><p>周日全天人格修炼。除无法提前处理的真实硬截止外，不安排杂务和普通作业。</p></article>
+          <article class="rule-card"><span>05</span><h3>不伪造信息</h3><p>地点、精确截止分钟、预约时间未确认时只做“待确认”占位，不把推测写成事实。</p></article>
+          <article class="rule-card"><span>06</span><h3>先查重再写入</h3><p>已有事件优先更新，避免日历中产生重复预约、重复截止和重复提醒。</p></article>
+        </div>
+      </section>
+
+      <section id="view-meals" class="view">
+        <div class="panel">
+          <div class="panel-head">
+            <div><h2>饮食排程</h2><p>餐食直接写入三餐事件，不另造重复日历。</p></div>
+          </div>
+          <div class="meal-grid">
+            <div class="meal-card"><span>早餐</span><h3>燕麦 + 牛奶 + 鸡蛋</h3><p>库存驱动，按现有食物动态调整。</p></div>
+            <div class="meal-card"><span>午餐</span><h3>意面 + 豆类</h3><p>113g 干意面只是起始量，不是上限。</p></div>
+            <div class="meal-card"><span>晚餐</span><h3>主食 + 蛋白质</h3><p>补货日之后重新规划，不为“省到下一天”而忍饿。</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-api" class="view">
+        <div class="grid two">
+          <div class="panel">
+            <div class="panel-head"><h2>REST API</h2></div>
+            <pre><code>POST /api/v1/plan
+POST /api/v1/calendar/write
+POST /api/v1/gmail/analyze
+POST /api/v1/deadlines/verify
+GET  /api/v1/rules
+GET  /api/v1/calendar/upcoming</code></pre>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>示例请求</h2></div>
+            <pre><code>{
+  "text": "FURF 11/1 截止，提前三次确认",
+  "timezone": "America/New_York",
+  "commit": false
+}</code></pre>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>设计原则</h2></div>
+          <p class="api-note">前端只负责输入、预览和确认；Gmail / Google Calendar OAuth 令牌必须留在服务端。公开演示站不应内置真实个人邮件、课程数据、地点历史或账号令牌。</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+<script src="app.js"></script>
+</body>
+</html>
