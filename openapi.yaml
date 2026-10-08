@@ -1,0 +1,69 @@
+openapi: 3.1.0
+info:
+  title: LifeOps Calendar Safety API
+  version: 0.1.0
+  description: >
+    A rule-driven interface for converting email and natural-language inputs
+    into safe calendar plans. Designed for Gmail + Google Calendar integration.
+servers:
+  - url: https://your-domain.example/api/v1
+paths:
+  /plan:
+    post:
+      summary: Convert natural-language intent into a proposed schedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text, timezone]
+              properties:
+                text: { type: string }
+                timezone: { type: string, example: America/New_York }
+                commit: { type: boolean, default: false }
+      responses:
+        "200":
+          description: Proposed actions after rule evaluation
+  /gmail/analyze:
+    post:
+      summary: Classify one or more emails into reply / ignore / calendar action
+      responses:
+        "200": { description: Email action proposals }
+  /calendar/write:
+    post:
+      summary: Write approved calendar actions after duplicate and conflict checks
+      responses:
+        "200": { description: Created or updated calendar events }
+  /deadlines/verify:
+    post:
+      summary: Verify whether a date/time is a true hard deadline before marking red
+      responses:
+        "200": { description: Verification result }
+  /rules:
+    get:
+      summary: Return the active scheduling rules
+      responses:
+        "200": { description: Rule set }
+  /calendar/upcoming:
+    get:
+      summary: Return upcoming tasks, deadlines and protected blocks
+      responses:
+        "200": { description: Upcoming plan }
+components:
+  schemas:
+    ProposedEvent:
+      type: object
+      properties:
+        title: { type: string }
+        start: { type: string, format: date-time }
+        end: { type: string, format: date-time }
+        all_day: { type: boolean }
+        kind:
+          type: string
+          enum: [class, study, errand, deadline, meal, personal, application]
+        hard_deadline: { type: boolean }
+        source_confidence:
+          type: string
+          enum: [confirmed, inferred, unknown]
+        notes: { type: string }
