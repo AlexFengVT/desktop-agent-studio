@@ -75,3 +75,14 @@ Backend API (FastAPI / Node)
 - GitHub Pages（静态演示）
 - Vercel / Netlify（静态演示）
 - 接 FastAPI/Node 后端后变成真正可用的 Gmail + Calendar 产品
+
+
+## Portable assistant handoff
+
+The repository now also contains `lifeops-assistant-contract/`, which is the portable behavior/state/API package for switching to another assistant without re-explaining the workflow.
+
+Start with:
+- `lifeops-assistant-contract/PORTABLE_HANDOFF.md`
+- `lifeops-assistant-contract/STATE_SNAPSHOT.json`
+- `lifeops-assistant-contract/REGRESSION_TESTS.json`
+- `lifeops-assistant-contract/openapi.yaml`
