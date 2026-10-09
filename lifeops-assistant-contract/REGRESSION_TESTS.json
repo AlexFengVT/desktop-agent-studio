@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "tests": [
+    {
+      "input": "FURF 11/1截止，但不知道几点",
+      "expected": [
+        "all-day red deadline",
+        "no invented 23:59",
+        "advance checks"
+      ]
+    },
+    {
+      "input": "ORNL rolling basis，加入防漏",
+      "expected": [
+        "check task",
+        "no fake deadline"
+      ]
+    },
+    {
+      "input": "明早7点确认quiz",
+      "expected": [
+        "exact 07:00 event",
+        "explicit timing overrides auto window"
+      ]
+    },
+    {
+      "input": "教授邮件确认quiz 13:00，但没说时长",
+      "expected": [
+        "start confirmed",
+        "duration unknown/placeholder",
+        "no false confirmation"
+      ]
+    },
+    {
+      "input": "把grading interview写入日历",
+      "precondition": "matching event exists",
+      "expected": [
+        "update existing",
+        "no duplicate"
+      ]
+    },
+    {
+      "input": "周日申请截止",
+      "expected": [
+        "deadline remains Sunday",
+        "actual work earlier if possible"
+      ]
+    },
+    {
+      "input": "再延后",
+      "precondition": "one discussed errand",
+      "expected": [
+        "move same event",
+        "no clarifying question"
+      ]
+    },
+    {
+      "input": "是否已经加了VCCW？",
+      "expected": [
+        "search calendar",
+        "answer only",
+        "no unauthorized creation"
+      ]
+    }
+  ]
+}
