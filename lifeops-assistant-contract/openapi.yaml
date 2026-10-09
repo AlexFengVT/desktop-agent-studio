@@ -1,0 +1,56 @@
+openapi: 3.1.0
+info:
+  title: LifeOps Assistant Contract API
+  version: 1.0.0
+  description: Portable orchestration API for Gmail + Google Calendar assistant continuity.
+servers:
+  - url: https://YOUR_BACKEND.example/api/v1
+paths:
+  /plan:
+    post:
+      operationId: planAction
+      summary: Convert user intent into rule-compliant actions
+      responses:
+        '200': { description: Proposed actions }
+  /sources/gmail/resolve:
+    post:
+      operationId: resolveGmailFacts
+      summary: Resolve authoritative facts from Gmail
+      responses:
+        '200': { description: Resolved facts }
+  /calendar/search:
+    post:
+      operationId: searchCalendar
+      summary: Search bounded Calendar window before mutation
+      responses:
+        '200': { description: Candidate events }
+  /calendar/ensure:
+    post:
+      operationId: ensureCalendarEvent
+      summary: Create or update one logical event without duplication
+      responses:
+        '200': { description: Resulting event }
+  /calendar/deadline:
+    post:
+      operationId: ensureDeadline
+      summary: Ensure a red hard-deadline marker without inventing unknown time
+      responses:
+        '200': { description: Deadline event }
+  /state/export:
+    get:
+      operationId: exportState
+      summary: Export assistant handoff state
+      responses:
+        '200': { description: State snapshot }
+  /state/import:
+    post:
+      operationId: importState
+      summary: Import assistant handoff state
+      responses:
+        '200': { description: Import result }
+  /rules:
+    get:
+      operationId: getRules
+      summary: Return active scheduling rules
+      responses:
+        '200': { description: Rule set }
